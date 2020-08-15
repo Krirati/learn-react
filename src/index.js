@@ -212,23 +212,72 @@ class InputComp extends React.Component {
   }
 }
 
+class LifeCycle extends React.Component{
+  constructor(props) {
+    super(props)
+    console.log('constructor');
+    this.state = {
+      name: 'name'
+    }
+  }
+  static getDerivedStateFromProps(props, state) {
+    console.log('getDerivedStaetFromProps');
+    console.log(props, state)
+    return {
+      name: props.count %2 ==0 ? "even": "odd"
+    }
+  }
+  componentDidMount() {
+    console.log('componentDidMount');
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.count > 5) {
+      return false
+    }
+    return true
+  }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    return {
+      count: prevProps.count
+    }
+  }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log(snapshot);
+  }
+  componentWillUnmount() {
+    console.log('unmount');
+  }
+  render() {
+    return (<div>{this.state.name}</div>)
+  }
+}
+
 class App extends React.Component{
   state = {
-    name: ''
+    name: '',
+    count: 0
   }
 
   headleName = (name) => {
     this.setState({name})
   }
-
+  add = () => {
+    // this.setState({count: [...this.state.numbers, this.state.numbers.length +1]})
+  }
   render() {
-    const name = `${this.state.name}`.trim()
-    const header = name ? <h1>Hello {name}</h1> :null
+    // const name = `${this.state.name}`.trim()
+    // const header = name ? <h1>Hello {name}</h1> :null
     return (
-      <React.Fragment>
-        {header}
-        <InputComp headleName={this.headleName}/>
-      </React.Fragment>
+      // <React.Fragment>
+      //   {header}
+      //   <InputComp headleName={this.headleName}/>
+      // </React.Fragment> 
+      // <> is short syntex
+      <>
+        <button onClick={()=> this.setState({count: this.state.count +1})}>Add</button>
+        <LifeCycle/>
+      </>
     )
   }
 }
@@ -236,9 +285,9 @@ class App extends React.Component{
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App/>
-  </React.StrictMode>,
+  // <React.StrictMode>
+    <App/>,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
 

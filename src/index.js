@@ -225,13 +225,15 @@ class App extends React.Component{
     const name = `${this.state.name}`.trim()
     const header = name ? <h1>Hello {name}</h1> :null
     return (
-      <div>
+      <React.Fragment>
         {header}
         <InputComp headleName={this.headleName}/>
-      </div>
+      </React.Fragment>
     )
   }
 }
+
+
 
 ReactDOM.render(
   <React.StrictMode>

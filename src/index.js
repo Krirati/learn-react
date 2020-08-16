@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { render } from '@testing-library/react';
+import styled from 'styled-components'
 
 
 // //function compoenet
@@ -519,16 +520,23 @@ function Example(props) {
   
   return (
     <div>
-      {/* <p style={{ color }}>{name(1)}</p>
+      <p style={{ color }}>{name(1)}</p>
       <p style={{ fontSize: fontContext }}>Title is {title}</p>
       <input value={title} onChange={(event) => setTitle(event.target.value)} />
       <p style={{ fontSize: '20px' }}>{count}</p>
       <button onClick={() => dispatchCount({ type: 'increment' })}>Click</button>
-      <button onClick={() => dispatchCount({ type: 'decrement' })}>Decrement</button> */}
-      <input value={title} onChange={(event) => setTitle(event.target.value)} onKeyUp={() => setEnter(true)}/>
+      <button onClick={() => dispatchCount({ type: 'decrement' })}>Decrement</button>
     </div>
   )
 }
+const TodoXList = styled.li`
+  color: ${props => props.color ? props.colos: 'blue'};
+  font-size: 20px
+`;
+const TodoXListPlus = styled(TodoXList)`
+  background-color: blue;
+  font-size: 30px;
+`;
 function TodoX() {
   const [todo, setTodo] = useState([])
   const onChange = (event) => {
@@ -539,10 +547,10 @@ function TodoX() {
     }
   }
   return (
-    <div>
+    <div >
       <input onKeyUp={onChange}/>
       <ul>
-        {todo.map((todo) => <li>{todo}</li>)}
+        {todo.map((todo) => <TodoXListPlus>{todo}</TodoXListPlus>)}
       </ul>
     </div>
   )
@@ -551,7 +559,6 @@ ReactDOM.render(
   <React.StrictMode>
     {/* <HelloCompoent/>
     <CompositionHello/> */}
-    <Example title={'Hello'} />
     <TodoX/>
   </React.StrictMode>,
   document.getElementById('root')

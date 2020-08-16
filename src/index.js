@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useReducer, useMemo, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
@@ -479,14 +479,28 @@ function useCountName(count, title) {
   return name
 }
 
-function Example(props) {
-  const [count, setCount] = useState(0)
-  const [title, setTitle] = useState('')
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return state + 1;
+    case 'decrement':
+      return state - 1;
+    default:
+      return state
+  }
+}
 
+function Example(props) {
+  const [count, dispatchCount] = useReducer(reducer, 0)
+  const [title, setTitle] = useState('')
+  const [items, setItems] = useState([])
+  const [enter, setEnter] = useState(false)
   const { color } = useContext(ColorContext)
   const fontContext = useContext(FontSize)
 
-  const name = useCountName(count, title)
+  // const name = useCountName(count, title)
+  // const name = useMemo(() => title + ' ' + count, [title, count])
+  const name = useCallback((a) => title + ' ' + count + a, [title, count])
   useEffect(() => {
     console.log("This is effect");
 
@@ -502,14 +516,34 @@ function Example(props) {
       clearInterval(inteval)
     }
   }, [])
-
+  
   return (
     <div>
-      <p style={{ color }}>{name}</p>
+      {/* <p style={{ color }}>{name(1)}</p>
       <p style={{ fontSize: fontContext }}>Title is {title}</p>
       <input value={title} onChange={(event) => setTitle(event.target.value)} />
       <p style={{ fontSize: '20px' }}>{count}</p>
-      <button onClick={() => setCount(count + 1)}>Click</button>
+      <button onClick={() => dispatchCount({ type: 'increment' })}>Click</button>
+      <button onClick={() => dispatchCount({ type: 'decrement' })}>Decrement</button> */}
+      <input value={title} onChange={(event) => setTitle(event.target.value)} onKeyUp={() => setEnter(true)}/>
+    </div>
+  )
+}
+function TodoX() {
+  const [todo, setTodo] = useState([])
+  const onChange = (event) => {
+    if (event.key === 'Enter') {
+      const value = event.target.value
+      setTodo([...todo, value])
+      event.target.value = ''
+    }
+  }
+  return (
+    <div>
+      <input onKeyUp={onChange}/>
+      <ul>
+        {todo.map((todo) => <li>{todo}</li>)}
+      </ul>
     </div>
   )
 }
@@ -518,6 +552,7 @@ ReactDOM.render(
     {/* <HelloCompoent/>
     <CompositionHello/> */}
     <Example title={'Hello'} />
+    <TodoX/>
   </React.StrictMode>,
   document.getElementById('root')
 );

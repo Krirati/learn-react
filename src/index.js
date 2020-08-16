@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
@@ -15,7 +15,7 @@ import { render } from '@testing-library/react';
 
 
 // class HelloWoldComp extends React.Component {
-  
+
 //   constructor(props) {
 //     super(props);
 //     this.state = {
@@ -306,90 +306,91 @@ import { render } from '@testing-library/react';
 
 
 //context API
-// const ColorContext = React.createContext({})
-// const FontSize = React.createContext({})
+const ColorContext = React.createContext({})
+const FontSize = React.createContext({})
 
-// class Todo extends React.Component {
-//   // static contextType = ColorContext
-//   render() {
-//     // return <p style={{color: this.context.color}}>{this.props.title}</p>
-//     return (
-//       <ColorContext.Consumer>
-//       {({color}) => (
-//         <FontSize.Consumer>
-//           {({fontSize}) => (
-//             <p style={{color: color, fontSize: fontSize + 'px'}}>{this.props.title}</p>
-//           )}
-//         </FontSize.Consumer>
-//       )}
-//       </ColorContext.Consumer>
-//     )
-//   }
-// }
-// // ไม่ทัน comsumer
-// function ToggleTodoButton() {
-//   return (
-//     <ColorContext.Consumer>
-//       {(context) => {
-//         return <button onClick={context.toggleColor}>{context.color}</button>
-//       }}
-//     </ColorContext.Consumer>
-//   )
-// }
+class Todo extends React.Component {
+  // static contextType = ColorContext
+  render() {
+    // return <p style={{color: this.context.color}}>{this.props.title}</p>
+    return (
+      <ColorContext.Consumer>
+        {({ color }) => (
+          <FontSize.Consumer>
+            {({ fontSize }) => (
+              <p style={{ color: color, fontSize: fontSize + 'px' }}>{this.props.title}</p>
+            )}
+          </FontSize.Consumer>
+        )}
+      </ColorContext.Consumer>
+    )
+  }
+}
+// ไม่ทัน comsumer
+function ToggleTodoButton() {
+  return (
+    <ColorContext.Consumer>
+      {(context) => {
+        return <button onClick={context.toggleColor}>{context.color}</button>
+      }}
+    </ColorContext.Consumer>
+  )
+}
 
-// function TodoList({color}) {
-//   return (
-//     <div>
-//       <Todo title={'Todo1'} color={color}/>
-//       <Todo title={'Todo2'} color={color}/>
-//       <ToggleTodoButton/>
-//     </div>
-//   )
-// }
+function TodoList({ color }) {
+  return (
+    <div>
+      <Todo title={'Todo1'} color={color} />
+      <Todo title={'Todo2'} color={color} />
+      <ToggleTodoButton />
+    </div>
+  )
+}
 
-// class App extends React.Component{
-//   state = {
-//     color: 'pink',
-//     fontSize: 17,
-//     toggleColor: () => {
-//       this.setState(({color}) => ({color: color ==='pink' ? 'green': 'pink'}))
-//     },
-//     count: 0
-//   }
-//   render() {
-//     const {color, fontSize, toggleColor} = this.state
-//     if (this.state.count >5) {
-//       throw(ErrorBoundaries)
-//     }
-//     return (
-//       <ColorContext.Provider value={{color, toggleColor}}>
-//         <FontSize.Provider value={{fontSize}}>
-//           <TodoList/>
-//           <button onClick={() => this.setState(() => this.state.count + 1)}>Click</button>
-//         </FontSize.Provider>
-//       </ColorContext.Provider>
-//     )
-//   }
-// }
+class App extends React.Component {
+  state = {
+    color: 'pink',
+    fontSize: 17,
+    toggleColor: () => {
+      this.setState(({ color }) => ({ color: color === 'pink' ? 'green' : 'pink' }))
+    },
+    count: 0
+  }
+  render() {
+    const { color, fontSize, toggleColor } = this.state
+    if (this.state.count > 5) {
+      throw (ErrorBoundaries)
+    }
+    return (
+      <ColorContext.Provider value={{ color, toggleColor }}>
+        <FontSize.Provider value={{ fontSize }}>
+          <TodoList />
+          {this.state.count > 5 ? null : <Example />}
+          <button onClick={() => this.setState(() => this.state.count + 1)}>Click app</button>
+        </FontSize.Provider>
+      </ColorContext.Provider>
+    )
+  }
+}
 
-// class AppX extends React.Component {
+class AppX extends React.Component {
 
-// }
-// class ErrorBoundaries extends React.Component {
-//   state = {
-//     isError: false,
-//   }
-//   static getDerivedStateFromError(error) {
-//     return {
-//       isError: true
-//     }
-//   }
-//   render() {
-//     return (
-//       this.state.isError ? <div>Something Wrong</div> : <div>{this.props.children}</div>
-//     )
-//   }
-// }
+}
+class ErrorBoundaries extends React.Component {
+  state = {
+    isError: false,
+  }
+  static getDerivedStateFromError(error) {
+    return {
+      isError: true
+    }
+  }
+  render() {
+    return (
+      this.state.isError ? <div>Something Wrong</div> : <div>{this.props.children}</div>
+    )
+  }
+}
 // class App2 extends React.Component{
 //   render() {
 //     return (
@@ -418,62 +419,105 @@ import { render } from '@testing-library/react';
 
 // const LoadingCompoent = withLoadingComponent(Hello)
 
-function Hello() {
+// function Hello() {
+//   return (
+//     <h1>Hello World!</h1>
+//   )
+// }
+// const withHello = (WrappedComponent) => {
+//   return class InpurComponent extends React.Component {
+//     state = {
+//       text: ''
+//     }
+//     onChange = (event) => {
+//       const text = event.target.value
+//       this.setState({ text })
+//     }
+//     render() {
+//       return (
+//         <div>
+//           <WrappedComponent />
+//           <p>{this.state.text}</p>
+//           <input onChange={this.onChange} value={this.state.text}></input>
+//         </div>
+//       )
+//     }
+//   }
+// }
+// const HelloCompoent = withHello(Hello)
+
+// function ComponentInput(props) {
+//   return <h2>{props.children}</h2>
+// }
+
+// class CompositionHello extends React.Component {
+//   state = {
+//     text: ''
+//   }
+//   onChange = (event) => {
+//     const text = event.target.value
+//     this.setState({ text })
+//   }
+//   render() {
+//     return (
+//       <>
+//         <h1>Hello World</h1>
+//         <ComponentInput>
+//           {this.state.text}
+//         </ComponentInput>
+//         <input onKeyUp={this.onChange}></input>
+//       </>
+//     )
+//   }
+// }
+function useCountName(count, title) {
+  const [name, setName] = useState('')
+
+  useEffect(() => {
+    setName(title + ' ' + count)
+  }, [count, title])
+  return name
+}
+
+function Example(props) {
+  const [count, setCount] = useState(0)
+  const [title, setTitle] = useState('')
+
+  const { color } = useContext(ColorContext)
+  const fontContext = useContext(FontSize)
+
+  const name = useCountName(count, title)
+  useEffect(() => {
+    console.log("This is effect");
+
+  }, [])
+
+  useEffect(() => {
+    console.log('This is effect 2');
+    const inteval = setInterval(() => {
+      console.log('xx');
+    }, 2000)
+    return () => {
+      console.log('xxx');
+      clearInterval(inteval)
+    }
+  }, [])
+
   return (
-    <h1>Hello World!</h1>
+    <div>
+      <p style={{ color }}>{name}</p>
+      <p style={{ fontSize: fontContext }}>Title is {title}</p>
+      <input value={title} onChange={(event) => setTitle(event.target.value)} />
+      <p style={{ fontSize: '20px' }}>{count}</p>
+      <button onClick={() => setCount(count + 1)}>Click</button>
+    </div>
   )
-}
-const withHello = (WrappedComponent) => {
-  return class InpurComponent extends React.Component {
-    state = {
-      text: ''
-    }
-    onChange = (event) => {
-      const text = event.target.value
-      this.setState({text})
-    }
-    render () {
-      return (
-        <div>
-          <WrappedComponent/>
-          <p>{this.state.text}</p>
-          <input onChange={this.onChange} value={this.state.text}></input>
-        </div>
-      )
-    }
-  }
-}
-const HelloCompoent = withHello(Hello)
-
-function ComponentInput(props) {
-  return <h2>{props.children}</h2>
-}
-
-class CompositionHello extends React.Component {
-  state = {
-    text: ''
-  }
-  onChange = (event) => {
-    const text = event.target.value
-    this.setState({text})
-  }
-  render() {
-    return (
-      <>
-      <h1>Hello World</h1>
-      <ComponentInput>
-        {this.state.text}
-      </ComponentInput>
-      <input onKeyUp={this.onChange}></input>
-      </>
-    )
-  }
- 
 }
 ReactDOM.render(
   <React.StrictMode>
-    <HelloCompoent/>
-    <CompositionHello/>
+    {/* <HelloCompoent/>
+    <CompositionHello/> */}
+    <Example title={'Hello'} />
   </React.StrictMode>,
   document.getElementById('root')
 );

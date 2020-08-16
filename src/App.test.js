@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 // import App from './App';
 
 
@@ -105,17 +105,29 @@ class App extends React.Component{
   state = {
     search: ''
   }
+  onChange = (event) => {
+    const value = event.target.value
+    this.setState({search: value})
+  }
   render() {
     return (<div>
-      Search: <input type="text"></input>
+      Search: <input type="text" onChange={this.onChange} value={this.state.search}></input>
     </div>)
   }
 }
 
-test('render app componet', () => {
+test('render app componet',async () => {
   render(<App />)
   screen.debug()
-  expect(screen.getByText('Search:')).toBeInTheDocument()
-  expect(screen.getByText(/Search/)).toBeInTheDocument()
-  expect(screen.getByRole('textbox')).toBeInTheDocument()
+  // console.log(screen.queryByDisplayValue('JavaScript').toBeNull());
+  setTimeout(() => {
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: {value: 'JavaScript'}
+    })
+  }, 1000)
+  expect(await screen.findByDisplayValue('JavaScript')).toBeInTheDocument()
+  screen.debug()
+  // expect(screen.getByText('Search:')).toBeInTheDocument()
+  // expect(screen.getByText(/Search/)).toBeInTheDocument()
+  // expect(screen.getByRole('textbox')).toBeInTheDocument()
 })
